@@ -1,0 +1,23 @@
+{
+  "name": "charts",
+  "version": "1.0.0",
+  "description": "Playing with charts",
+  "main": "",
+  "scripts": {
+    "serve": "ws"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pixelbandito/charts.git"
+  },
+  "author": "pixelbandito",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pixelbandito/charts/issues"
+  },
+  "homepage": "https://github.com/pixelbandito/charts#readme",
+  "devDependencies": {
+    "chartjs": "^0.3.24",
+    "ws": "^2.2.2"
+  }
+}
