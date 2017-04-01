@@ -1,0 +1,295 @@
+<!doctype html>
+<html class="viewport-fill viewport-frame" lang="en">
+    <head>
+        <title>3D</title>
+        <script src="src/3D.js"></script>
+        <style>
+            * {
+                box-sizing: border-box;
+            }
+            html,
+            body {
+                margin: 0;
+                padding: 0;
+            }
+            .viewport-frame {
+                position: relative;
+            }
+            .viewport-fill {
+                position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+            }
+            .object-fill {
+                object-fit: cover;
+                object-position: 50% 50%;
+                height: 100%;
+                width: 100%;
+            }
+            .moveBtn {
+                position: absolute;
+                margin-left: -50px;
+                width: 100px;
+                text-align: center;
+                z-index: 1;
+            }
+            .moveBtn--back {
+                top: 10px;
+                left: 40%;
+            }
+            .moveBtn--forward {
+                top: 50px;
+                left: 40%;
+            }
+            .moveBtn--up {
+                top: 10px;
+                left: 60%;
+            }
+            .moveBtn--down {
+                top: 50px;
+                left: 60%;
+            }
+            .moveBtn--left {
+                top: 35px;
+                left: 20%;
+            }
+            .moveBtn--right {
+                top: 35px;
+                left: 80%;
+            }
+            #cube1 circle {
+                transition: cx 200ms linear, cy 200ms linear, cy 200ms linear;
+                will-change: cs, cy, cz;
+            }
+        </style>
+    </head>
+    <body class="viewport-fill">
+        <button class="moveBtn moveBtn--back" type="button">
+            Move back
+        </button>
+        <button class="moveBtn moveBtn--forward" type="button">
+            Move forward
+        </button>
+        <button class="moveBtn moveBtn--up" type="button">
+            Move up
+        </button>
+        <button class="moveBtn moveBtn--down" type="button">
+            Move down
+        </button>
+        <button class="moveBtn moveBtn--left" type="button">
+            Move left
+        </button>
+        <button class="moveBtn moveBtn--right" type="button">
+            Move right
+        </button>
+        <svg class="object-fill" viewbox="0 0 1440 900" xmlns="http://www.w3.org/2000/svg">
+            <g id="cube1">
+            </g>
+        </svg>
+        <script>
+            var cube1 = {
+                key: 'cube1',
+                vertices: {
+                    'vertex-0-0-0': {
+                        x: 570,
+                        y: 300,
+                        z: 570
+                    },
+                    'vertex-1-0-0': {
+                        x: 870,
+                        y: 300,
+                        z: 570
+                    },
+                    'vertex-1-1-0': {
+                        x: 870,
+                        y: 600,
+                        z: 570
+                    },
+                    'vertex-0-1-0': {
+                        x: 570,
+                        y: 600,
+                        z: 570
+                    },
+                    'vertex-0-0-1': {
+                        x: 570,
+                        y: 300,
+                        z: 870
+                    },
+                    'vertex-1-0-1': {
+                        x: 870,
+                        y: 300,
+                        z: 870
+                    },
+                    'vertex-1-1-1': {
+                        x: 870,
+                        y: 600,
+                        z: 870
+                    },
+                    'vertex-0-1-1': {
+                        x: 570,
+                        y: 600,
+                        z: 870
+                    },
+                }
+            };
+            var camera = {
+                x: 720,
+                y: 300,
+                z: -1440
+            };
+            var screenDistance = 1440;
+            var moveSpeed = 100,
+                moveInterval = 200;
+
+            render(cube1);
+
+            var movingBackInterval,
+                moveBtnBack = document.querySelector('.moveBtn--back');
+
+            // moveBtnBack.addEventListener("mousedown", startMovingBack);
+            // moveBtnBack.addEventListener("mouseup", stopMovingBack);
+            moveBtnBack.addEventListener("mouseup", moveBack);
+
+            function startMovingBack() {
+                movingBackInterval = window.setInterval(moveBack, moveInterval);
+            }
+            function stopMovingBack() {
+                window.clearInterval(movingBackInterval);
+            }
+            function moveBack() {
+                translateSolid(cube1, 0, 0, moveSpeed);
+            }
+
+            var movingForwardInterval,
+                moveBtnForward = document.querySelector('.moveBtn--forward');
+
+            // moveBtnForward.addEventListener("mousedown", startMovingForward);
+            // moveBtnForward.addEventListener("mouseup", stopMovingForward);
+            moveBtnForward.addEventListener("mouseup", moveForward);
+
+            function startMovingForward() {
+                movingForwardInterval = window.setInterval(moveForward, moveInterval);
+            }
+            function stopMovingForward() {
+                window.clearInterval(movingForwardInterval);
+            }
+            function moveForward() {
+                translateSolid(cube1, 0, 0, -moveSpeed);
+            }
+
+            var movingUpInterval,
+                moveBtnUp = document.querySelector('.moveBtn--up');
+
+            // moveBtnUp.addEventListener("mousedown", startMovingUp);
+            // moveBtnUp.addEventListener("mouseup", stopMovingUp);
+            moveBtnUp.addEventListener("mouseup", moveUp);
+
+            function startMovingUp() {
+                movingUpInterval = window.setInterval(moveUp, moveInterval);
+            }
+            function stopMovingUp() {
+                window.clearInterval(movingUpInterval);
+            }
+            function moveUp() {
+                translateSolid(cube1, 0, -moveSpeed, 0);
+            }
+
+            var movingDownInterval,
+                moveBtnDown = document.querySelector('.moveBtn--down');
+
+            // moveBtnDown.addEventListener("mousedown", startMovingDown);
+            // moveBtnDown.addEventListener("mouseup", stopMovingDown);
+            moveBtnDown.addEventListener("mouseup", moveDown);
+
+            function startMovingDown() {
+                movingDownInterval = window.setInterval(moveDown, moveInterval);
+            }
+            function stopMovingDown() {
+                window.clearInterval(movingDownInterval);
+            }
+            function moveDown() {
+                translateSolid(cube1, 0, moveSpeed, 0);
+            }
+
+            var movingLeftInterval,
+                moveBtnLeft = document.querySelector('.moveBtn--left');
+
+            // moveBtnLeft.addEventListener("mousedown", startMovingLeft);
+            // moveBtnLeft.addEventListener("mouseup", stopMovingLeft);
+            moveBtnLeft.addEventListener("click", moveLeft);
+
+            function startMovingLeft() {
+                movingLeftInterval = window.setInterval(moveLeft, moveInterval);
+            }
+            function stopMovingLeft() {
+                window.clearInterval(movingLeftInterval);
+            }
+            function moveLeft() {
+                translateSolid(cube1, -moveSpeed, 0, 0);
+            }
+
+            var movingRightInterval,
+                moveBtnRight = document.querySelector('.moveBtn--right');
+
+            // moveBtnRight.addEventListener("mousedown", startMovingRight);
+            // moveBtnRight.addEventListener("mouseup", stopMovingRight);
+            moveBtnRight.addEventListener("click", moveRight);
+
+            function startMovingRight() {
+                movingRightInterval = window.setInterval(moveRight, moveInterval);
+            }
+            function stopMovingRight() {
+                window.clearInterval(movingRightInterval);
+            }
+            function moveRight() {
+                translateSolid(cube1, moveSpeed, 0, 0);
+            }
+
+            function translateSolid(solid, x, y, z) {
+                var pointKeys = Object.keys(solid.vertices);
+                for (var i = 0, n = pointKeys.length; i < n; i++) {
+                    var pointKey = pointKeys[i],
+                        vertex = solid.vertices[pointKey];
+                        vertex.x += x;
+                        vertex.y += y;
+                        vertex.z += z;
+                }
+                render(solid);
+            }
+
+            function render(solid) {
+                var solidElement = document.getElementById(solid.key),
+                    pointKeys = Object.keys(solid.vertices);
+                for (var i = 0, n = pointKeys.length; i < n; i++) {
+                    var pointKey = pointKeys[i],
+                        pointId = solid.key + '-' + pointKey,
+                        vertex = solid.vertices[pointKey],
+                        screenCoordinates = getVertexScreenCoordinates(vertex),
+                        vertexElement = document.getElementById(pointId);
+                    if (!vertexElement) {
+                        solidElement.innerHTML += '<circle id="' + pointId + '" cx="-100" cy="-100" r="2"></circle>';
+                        vertexElement = document.getElementById(pointId);
+                    }
+                    vertexElement.setAttribute('cx', screenCoordinates.x);
+                    vertexElement.setAttribute('cy', screenCoordinates.y);
+                }
+            }
+
+            function getVertexScreenCoordinates(vertex) {
+                var deltaX = vertex.x - camera.x,
+                    deltaY = vertex.y - camera.y,
+                    deltaZ = vertex.z - camera.z,
+                    x = deltaX / deltaZ * screenDistance + camera.x,
+                    y = deltaY / deltaZ * screenDistance + camera.y;
+                return {
+                    x: x,
+                    y: y
+                };
+            }
+        </script>
+    </body>
+</html>
