@@ -61,10 +61,16 @@
                 top: 35px;
                 left: 80%;
             }
+            /*
             #cube1 circle {
-                transition: cx 200ms linear, cy 200ms linear, cy 200ms linear;
-                will-change: cs, cy, cz;
+                transition: cx 200ms linear, cy 200ms linear;
+                will-change: cx, cy;
             }
+            #cube1 line {
+                transition: x1 200ms linear, y1 200ms linear, x2 200ms linear, y2 200ms linear;
+                will-change: x1, y1, x2, y2;
+            }
+            */
         </style>
     </head>
     <body class="viewport-fill">
@@ -134,7 +140,31 @@
                         y: 600,
                         z: 870
                     },
-                }
+                },
+                points: [
+                    // 'vertex-0-0-0',
+                    // 'vertex-1-0-0',
+                    // 'vertex-1-1-0',
+                    // 'vertex-0-1-0',
+                    // 'vertex-0-0-1',
+                    // 'vertex-1-0-1',
+                    // 'vertex-1-1-1',
+                    // 'vertex-0-1-1'
+                ],
+                edges: [
+                    ['vertex-0-0-0', 'vertex-1-0-0'],
+                    ['vertex-1-0-0', 'vertex-1-1-0'],
+                    ['vertex-1-1-0', 'vertex-0-1-0'],
+                    ['vertex-0-1-0', 'vertex-0-0-0'],
+                    ['vertex-0-0-1', 'vertex-1-0-1'],
+                    ['vertex-1-0-1', 'vertex-1-1-1'],
+                    ['vertex-1-1-1', 'vertex-0-1-1'],
+                    ['vertex-0-1-1', 'vertex-0-0-1'],
+                    ['vertex-0-0-0', 'vertex-0-0-1'],
+                    ['vertex-1-0-0', 'vertex-1-0-1'],
+                    ['vertex-1-1-0', 'vertex-1-1-1'],
+                    ['vertex-0-1-0', 'vertex-0-1-1'],
+                ]
             };
             var camera = {
                 x: 720,
@@ -147,113 +177,44 @@
 
             render(cube1);
 
-            var movingBackInterval,
-                moveBtnBack = document.querySelector('.moveBtn--back');
+            var directions = ['back', 'forward', 'up', 'down', 'left', 'right'],
+                moveBtn = {};
 
-            // moveBtnBack.addEventListener("mousedown", startMovingBack);
-            // moveBtnBack.addEventListener("mouseup", stopMovingBack);
-            moveBtnBack.addEventListener("mouseup", moveBack);
-
-            function startMovingBack() {
-                movingBackInterval = window.setInterval(moveBack, moveInterval);
-            }
-            function stopMovingBack() {
-                window.clearInterval(movingBackInterval);
-            }
-            function moveBack() {
-                translateSolid(cube1, 0, 0, moveSpeed);
+            for (var i = 0, n = directions.length; i < n; i++) {
+                var direction = directions[i];
+                moveBtn[direction] = document.querySelector('.moveBtn--' + direction);
+                moveBtn[direction].addEventListener("mouseup", move()[direction]);
             }
 
-            var movingForwardInterval,
-                moveBtnForward = document.querySelector('.moveBtn--forward');
+            function move() {
+                return {
+                    back: function() {
+                        translateSolid(cube1, 0, 0, moveSpeed);
+                    },
+                    forward: function() {
+                        translateSolid(cube1, 0, 0, -moveSpeed);
+                    },
+                    up: function() {
+                        translateSolid(cube1, 0, -moveSpeed, 0);
+                    },
+                    down: function() {
+                        translateSolid(cube1, 0, moveSpeed, 0);
+                    },
+                    left: function() {
+                        translateSolid(cube1, -moveSpeed, 0, 0);
+                    },
+                    right: function() {
+                        translateSolid(cube1, moveSpeed, 0, 0);
+                    }
+                };
 
-            // moveBtnForward.addEventListener("mousedown", startMovingForward);
-            // moveBtnForward.addEventListener("mouseup", stopMovingForward);
-            moveBtnForward.addEventListener("mouseup", moveForward);
-
-            function startMovingForward() {
-                movingForwardInterval = window.setInterval(moveForward, moveInterval);
-            }
-            function stopMovingForward() {
-                window.clearInterval(movingForwardInterval);
-            }
-            function moveForward() {
-                translateSolid(cube1, 0, 0, -moveSpeed);
-            }
-
-            var movingUpInterval,
-                moveBtnUp = document.querySelector('.moveBtn--up');
-
-            // moveBtnUp.addEventListener("mousedown", startMovingUp);
-            // moveBtnUp.addEventListener("mouseup", stopMovingUp);
-            moveBtnUp.addEventListener("mouseup", moveUp);
-
-            function startMovingUp() {
-                movingUpInterval = window.setInterval(moveUp, moveInterval);
-            }
-            function stopMovingUp() {
-                window.clearInterval(movingUpInterval);
-            }
-            function moveUp() {
-                translateSolid(cube1, 0, -moveSpeed, 0);
-            }
-
-            var movingDownInterval,
-                moveBtnDown = document.querySelector('.moveBtn--down');
-
-            // moveBtnDown.addEventListener("mousedown", startMovingDown);
-            // moveBtnDown.addEventListener("mouseup", stopMovingDown);
-            moveBtnDown.addEventListener("mouseup", moveDown);
-
-            function startMovingDown() {
-                movingDownInterval = window.setInterval(moveDown, moveInterval);
-            }
-            function stopMovingDown() {
-                window.clearInterval(movingDownInterval);
-            }
-            function moveDown() {
-                translateSolid(cube1, 0, moveSpeed, 0);
-            }
-
-            var movingLeftInterval,
-                moveBtnLeft = document.querySelector('.moveBtn--left');
-
-            // moveBtnLeft.addEventListener("mousedown", startMovingLeft);
-            // moveBtnLeft.addEventListener("mouseup", stopMovingLeft);
-            moveBtnLeft.addEventListener("click", moveLeft);
-
-            function startMovingLeft() {
-                movingLeftInterval = window.setInterval(moveLeft, moveInterval);
-            }
-            function stopMovingLeft() {
-                window.clearInterval(movingLeftInterval);
-            }
-            function moveLeft() {
-                translateSolid(cube1, -moveSpeed, 0, 0);
-            }
-
-            var movingRightInterval,
-                moveBtnRight = document.querySelector('.moveBtn--right');
-
-            // moveBtnRight.addEventListener("mousedown", startMovingRight);
-            // moveBtnRight.addEventListener("mouseup", stopMovingRight);
-            moveBtnRight.addEventListener("click", moveRight);
-
-            function startMovingRight() {
-                movingRightInterval = window.setInterval(moveRight, moveInterval);
-            }
-            function stopMovingRight() {
-                window.clearInterval(movingRightInterval);
-            }
-            function moveRight() {
-                translateSolid(cube1, moveSpeed, 0, 0);
             }
 
             function translateSolid(solid, x, y, z) {
-                var pointKeys = Object.keys(solid.vertices);
-                for (var i = 0, n = pointKeys.length; i < n; i++) {
-                    var pointKey = pointKeys[i],
-                        vertex = solid.vertices[pointKey];
+                var vertexKeys = Object.keys(solid.vertices);
+                for (var i = 0, n = vertexKeys.length; i < n; i++) {
+                    var vertexKey = vertexKeys[i],
+                        vertex = solid.vertices[vertexKey];
                         vertex.x += x;
                         vertex.y += y;
                         vertex.z += z;
@@ -263,19 +224,36 @@
 
             function render(solid) {
                 var solidElement = document.getElementById(solid.key),
-                    pointKeys = Object.keys(solid.vertices);
-                for (var i = 0, n = pointKeys.length; i < n; i++) {
-                    var pointKey = pointKeys[i],
-                        pointId = solid.key + '-' + pointKey,
-                        vertex = solid.vertices[pointKey],
-                        screenCoordinates = getVertexScreenCoordinates(vertex),
-                        vertexElement = document.getElementById(pointId);
-                    if (!vertexElement) {
-                        solidElement.innerHTML += '<circle id="' + pointId + '" cx="-100" cy="-100" r="2"></circle>';
-                        vertexElement = document.getElementById(pointId);
+                    vertexKeys = Object.keys(solid.vertices),
+                    screenCoordinates = {};
+                for (var i = 0, n = vertexKeys.length; i < n; i++) {
+                    var vertexKey = vertexKeys[i],
+                        vertex = solid.vertices[vertexKey];
+                    screenCoordinates[vertexKey] = getVertexScreenCoordinates(vertex);
+                }
+                for (i = 0, n = solid.points.length; i < n; i++) {
+                    var point = solid.points[i],
+                        pointId = solid.key + '-' + point,
+                        pointElement = document.getElementById(pointId);
+                    if (!pointElement) {
+                        solidElement.innerHTML += '<circle id="' + pointId + '" cx="-100" cy="-100" r="4" fill="black"></circle>';
+                        pointElement = document.getElementById(pointId);
                     }
-                    vertexElement.setAttribute('cx', screenCoordinates.x);
-                    vertexElement.setAttribute('cy', screenCoordinates.y);
+                    pointElement.setAttribute('cx', screenCoordinates[point].x);
+                    pointElement.setAttribute('cy', screenCoordinates[point].y);
+                }
+                for (i = 0, n = solid.edges.length; i < n; i++) {
+                    var edge = solid.edges[i],
+                        edgeId = solid.key + '-' + edge[0] + '-' + edge[1],
+                        edgeElement = document.getElementById(edgeId);
+                        if (!edgeElement) {
+                            solidElement.innerHTML += '<line id="' + edgeId + '" x1="-100" y1="-100" x2="-100" y2="-100" stroke-width="4" stroke="black"/>';
+                            edgeElement = document.getElementById(edgeId);
+                        }
+                        edgeElement.setAttribute('x1', screenCoordinates[edge[0]].x);
+                        edgeElement.setAttribute('y1', screenCoordinates[edge[0]].y);
+                        edgeElement.setAttribute('x2', screenCoordinates[edge[1]].x);
+                        edgeElement.setAttribute('y2', screenCoordinates[edge[1]].y);
                 }
             }
 
